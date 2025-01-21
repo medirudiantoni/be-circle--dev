@@ -47,17 +47,22 @@ export const getAllThreads = async (req: Request, res: Response) => {
             Children: {
               include: {
                 Like: true,
-                Children: true,
+                Children: {
+                  include: {
+                    Like: true,
+                    Children: true,
+                  },
+                },
               },
             },
           },
         },
       },
       orderBy: {
-        id: "desc"
+        id: 'desc',
       },
       // skip: jumlah,
-      // take: jumlah yang ditampilkan 
+      // take: jumlah yang ditampilkan
     });
     res.status(200).json({
       message: 'GET all threads SUCCESS!',
@@ -80,10 +85,10 @@ export const getThreadById = async (req: Request, res: Response) => {
         Like: true,
         Reply: {
           where: {
-            parentId: null
+            parentId: null,
           },
           orderBy: {
-            id: 'desc'
+            id: 'desc',
           },
           include: {
             User: true,
@@ -92,13 +97,13 @@ export const getThreadById = async (req: Request, res: Response) => {
               include: {
                 User: true,
                 Like: true,
-                Children: true
-              }
-            }
-          }
-        }
-      }
-    })
+                Children: true,
+              },
+            },
+          },
+        },
+      },
+    });
     if (!data) {
       res.status(404).json({
         message: `thread with id: ${id} is not exist!`,
@@ -121,7 +126,7 @@ export const getThreadByUserId = async (req: Request, res: Response) => {
   try {
     const data = await prisma.thread.findMany({
       where: {
-        authorId: Number(userId)
+        authorId: Number(userId),
       },
       include: {
         User: true,
@@ -133,14 +138,14 @@ export const getThreadByUserId = async (req: Request, res: Response) => {
             Children: true,
           },
           orderBy: {
-            id: 'desc'
-          }
-        }
+            id: 'desc',
+          },
+        },
         // Reply: { include: { Like: true } },
       },
       orderBy: {
-        id: 'desc'
-      }
+        id: 'desc',
+      },
     });
     if (!data) {
       res.status(404).json({
@@ -195,7 +200,7 @@ export const updateThread = [
     } catch (error) {
       res.status(500).json({
         message: 'Server error',
-        detail: error
+        detail: error,
       });
     }
   },
